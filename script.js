@@ -20,20 +20,31 @@ window.addEventListener("DOMContentLoaded", () => {
  });
 
  createBtn.addEventListener('click', (ev) => {
+  let fields = data.fields,
+      buttons = data.buttons,
+      references = data.references; 
+
   ev.preventDefault();
   if (typeof(data) === 'object') {
-   let fields = data.fields,
-       buttons = data.buttons; 
-
-   console.log(buttons);
-
-   app.innerHTML= 'блабла';
    createBtn.disabled = true;
 
-  } else {
-   console.log('вы не загрузили файл')
-  }
+   func(references);
 
+
+   function func(obj) {
+     Object.values(obj).forEach(i => {
+      if(typeof(i) === 'object') {
+       func(i)
+      } else {
+       console.log(i)
+       app.append(`${i + ' '}`);
+      }
+     })
+   };
+  } else {
+   app.innerHTML ='вы не загрузили файл';
+  }
+ 
  }, {once: true});
 
  clearBtn.addEventListener('click', (ev) => {
