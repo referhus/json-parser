@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
  let file,
      data;
-
+ 
  inputFile.addEventListener('change', () => {
   file = inputFile.files[0]
 
@@ -20,27 +20,44 @@ window.addEventListener("DOMContentLoaded", () => {
  });
 
  createBtn.addEventListener('click', (ev) => {
-  let fields = data.fields,
-      buttons = data.buttons,
-      references = data.references; 
-
+  let title = '',
+      fields = '',
+      btns = '',
+      ref = ''; 
+      
   ev.preventDefault();
+
   if (typeof(data) === 'object') {
    createBtn.disabled = true;
 
-   func(references);
+   Object.keys(data).forEach(key => {
+    switch (key) {
+    case "name":
+      title = data[key];
+      break
+    case "fields":
+      fields = data[key];
+      break
 
+    case "references":
+      ref = data[key];
+      break
 
-   function func(obj) {
-     Object.values(obj).forEach(i => {
-      if(typeof(i) === 'object') {
-       func(i)
-      } else {
-       console.log(i)
-       app.append(`${i + ' '}`);
-      }
-     })
-   };
+    case "buttons":
+      btns = data[key];
+      break
+
+    }
+   })
+  
+   iterateObj(fields);
+
+   function iterateObj(obj) {
+     for(let key in obj) {
+      console.log(key)
+    } 
+   }
+
   } else {
    app.innerHTML ='вы не загрузили файл';
   }
