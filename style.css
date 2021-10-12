@@ -6,17 +6,17 @@
 
 body {
  background: #191919;
- height: 100vh;
  display: flex;
  justify-content: center;
  align-items: center;
+  transition: all 0.3s linear;
 }
 
 .container {
  background: rgba(0,0,0,0.5);
  max-width: 800px;
  width: 100%;
- height: auto;
+ min-height: 600px;
  padding: 60px;
  display: flex;
  flex-direction: column;
@@ -112,9 +112,59 @@ cursor: pointer;
 
 .app {
  margin-top: 20px;
+ padding: 20px;
  color: #fff;
- height: 300px;
+ height: auto;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
 }
+
+.app input,
+.app button {
+ width: 180px;
+ display: flex;
+ justify-content: center;
+ border: 2px solid #FFFAFA;
+ border-radius: 12px;
+ padding: 5px 20px;
+ background: transparent;
+ color: #fff;
+ font-size: 13px;
+ text-transform: uppercase;
+ text-align: center;
+ margin-top: 15px;
+ opacity: 0.7;
+ cursor: pointer;
+ transition: all 0.4s linear;
+}
+
+.app input {
+ flex-direction: column;
+}
+
+.app input:focus {
+ border: none;
+}
+
+.app input:hover,
+.app button:hover {
+ opacity: 1;
+ background: rgba(0, 0, 0);
+ border: 2px solid #8B0000;
+  text-shadow: #8B0000 2px 0 0, 
+               #8B0000 2px 1px 0;
+}
+
+.app label {
+ margin-top: 15px;
+}
+
+h2 {
+ text-transform: uppercase;
+ font-size: 16px;
+}
+
 
 @media screen and (max-width: 665px) {
 .submit {
