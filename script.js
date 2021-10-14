@@ -43,8 +43,8 @@ window.addEventListener("DOMContentLoaded", () => {
       Object.keys(data).forEach(key => {
         switch (key) {
         case "name":
-         title = data[key];
-         createTitle(title)
+         nameTitle = data[key];
+         createTitle(nameTitle)
         break
         case "fields":
          fields = data[key];
@@ -91,7 +91,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //ПЕРЕБОР ЭЛЕМЕНТОВ ФАЙЛА
   function iterateObj(obj, value) {
-
+//FIELDS
     const keys = Object.keys(data);
     data[keys[1]].forEach((elem, i) => {
     const fieldsKeys = Object.keys(elem);
@@ -110,18 +110,28 @@ window.addEventListener("DOMContentLoaded", () => {
     });
    });
 
-   //  data[keys[2]].forEach((elem, i) => {
-   //  const refKeys = Object.keys(elem);
-   //  refKeys.forEach(el => {
-   //     switch (el) {
-   //      case "input":
-   //      createInput(elem, el)
-   //       break;
-   //     }
-   //   createLink(elem, el)
-   //  });
-   // });
+//REFERENCES
+    let twh = document.createElement('span');
+    let link = document.createElement('a');
+    app.append(twh)
+    twh.after(link)
 
+    data[keys[2]].forEach((elem, i) => {
+    const refKeys = Object.keys(elem);
+    refKeys.forEach((el, i) => {
+       switch(el) {
+        case 'input':
+        createInput(elem, el)
+        break;
+        default:   
+        createLink(elem[el], el, link, twh)
+        break
+       }
+
+    });
+   });
+
+//BUTTONS
     data[keys[3]].forEach((elem, i) => {
     const btnKeys = Object.keys(elem);
     btnKeys.forEach(el => {
@@ -130,17 +140,17 @@ window.addEventListener("DOMContentLoaded", () => {
       createButtons(elem, el)
        break;
       default:
-       console.log('ошибка')
-       break;
+      return
+       break;      
      }
     });
    });
-  }
-
+}
 //СОЗДАЕМ ИМЯ ФОРМЫ 
-  function createTitle(title) {
+  function createTitle(nameTitle) {
     const h2 = document.createElement('H2');
-    h2.innerHTML = `${title}`;
+    let title = nameTitle.replaceAll('_', ' ')
+    h2.innerHTML = title;
     app.prepend(h2)
   }
 
@@ -160,28 +170,39 @@ window.addEventListener("DOMContentLoaded", () => {
       let key = Object.keys(elem[el]);
 
       key.forEach(i => {
+        let value;
+        let id = createId()
         switch (i) {
         case "type":
-         let id = createId()
-         if(elem[el][i] === 'textarea') {
+         switch (elem[el][i]) {
+         case "textarea": 
             textarea = document.createElement('textarea');
             app.removeChild(input)
-            let value = Object.values(elem[el])
-            textarea.setAttribute(`${key[1]}`, `${value[1]}`)
+            value = Object.values(elem[el])
+            textarea.setAttribute(`${key[1]}`, '')
             app.append(textarea)
-         } else {
-           input.setAttribute(`${i}`, `${elem[el][i]}`) 
+          break
+         case "color": 
+          app.removeChild(input)
+          value = Object.values(elem[el])
+          createColors(key, value) 
+          break 
+         case "number": 
            input.setAttribute('id', `${id}`)
-           if(label === true) {
-             label.setAttribute('for', `${id}`)      
-           } 
+         default:
+           input.setAttribute(`${i}`, `${elem[el][i]}`) 
+          break;
+           }
+        break;  
+        case "required":
+        if (elem[el][i] === true) {
+         input.setAttribute(`${i}`, '')
         }
         break;
-        case "required":
-         input.setAttribute(`${i}`, `${elem[el][i]}`)     
-        break;
         case "checked":
-         input.setAttribute(`${i}`, `${elem[el][i]}`)
+        if (elem[el][i] === true) {
+         input.setAttribute(`${i}`, '')
+        }
         break;
         case "placeholder":
          input.setAttribute(`${i}`, `${elem[el][i]}`)
@@ -193,10 +214,15 @@ window.addEventListener("DOMContentLoaded", () => {
          createTechnology(i, elem[el][i])
         break;
         case "multiple":
-         input.setAttribute(`${i}`, `${elem[el][i]}`)
+        if (elem[el][i] === true) {
+         input.setAttribute(`${i}`, '')
+        }
         break;
+        case "mask":
+        input.setAttribute('type', 'text')
+        // console.log(id)
+        // $(`#${id}`).mask(`${elem[el][i]}`);
         default:
-         console.log('ошибка')
         break;
        } 
       });
@@ -211,14 +237,12 @@ window.addEventListener("DOMContentLoaded", () => {
     app.append(button)
   }
 
-
 //СОЗДАЕМ АТРИБУТ TYPEFILE 
   function createFileType(i, type) {
 
    let fileType = type.join('/');
    input.setAttribute('accept', `${fileType}`);
   }
-
 
 //СОЗДАЕМ ТЕХНОЛОГИИ
   function createTechnology(i, technologies) {
@@ -245,11 +269,57 @@ window.addEventListener("DOMContentLoaded", () => {
     })
   }
 
+//СОЗДАЕМ МАСКУ
+
+//СОЗДАЕМ ЦВЕТА
+function createColors(key, value) {
+  let select = document.createElement('select')
+  app.append(select)
+  let option = document.createElement('option')
+  option.style.background = '#191919'
+  option.setAttribute('hidden', '')
+  option.setAttribute('disabled', '')
+  option.setAttribute('selected', '')
+  option.innerHTML = 'Выберите цветовую схему';
+  select.append(option)
+  let colors = Object.values(value[1])
+  colors.forEach(i => {
+    let color = document.createElement('option')
+    color.style.background = `${i}`
+    color.innerHTML = i;
+    select.append(color)
+  })
+
+}
+
+//СОЗДАЕМ ССЫЛКУ 
+  function createLink(key, value, link, twh) {
+
+    switch (value) {
+      case "text":
+      link.innerHTML = `${key}`
+      break;
+      case "ref":
+      link.setAttribute('href', `${'#' + key}`)
+      break;
+      case "text without ref":
+      twh.innerHTML = `${key}`
+      break;
+      default:
+      break;
+     }
+  }
+
+
+//МАСКИ (JQUERY)
+
+
+
 //СОЗДАЕМ ID ДЛЯ ИНПУТОВ И ЛЕЙБЛОВ
   function createId() {
     let random_start = 1;
-    let random_end = 1000;
-    allСycles = 20;
+    let random_end = 500;
+    allСycles = 10;
     let array= []
     for(i=random_start;i<=random_end;i++){
        array.push(i)
