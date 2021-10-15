@@ -9,7 +9,8 @@ window.addEventListener("DOMContentLoaded", () => {
      data,
      label,
      textarea,
-     input;
+     input,
+     form;
 
  
  //ЗАГРУЗКА ФАЙЛА
@@ -36,6 +37,9 @@ window.addEventListener("DOMContentLoaded", () => {
         ref,
         value,
         keys;
+    form = document.createElement('form')
+    form.className = "formFile"
+    app.append(form)
 
     if (typeof(data) === 'object') {
       createBtn.disabled = true;
@@ -59,6 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
       })
 
       iterateObj()
+
     } else {
       app.innerHTML ='вы не загрузили файл';
     }
@@ -68,7 +73,10 @@ window.addEventListener("DOMContentLoaded", () => {
 //КЛИК ПО КНОПКЕ ОЧИСТИТЬ
   clearBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
-    app.innerHTML= 'Данные очищены. Выберите новый файл';
+    app.innerHTML = ''
+    let h2 = document.createElement('H2')
+    h2.innerHTML = 'Форма очищена. Выберите новый файл'
+    app.prepend(h2)
     file = '';
     createBtn.disabled = false;
     inputFile.disabled = false;
@@ -113,7 +121,7 @@ window.addEventListener("DOMContentLoaded", () => {
 //REFERENCES
     let twh = document.createElement('span');
     let link = document.createElement('a');
-    app.append(twh)
+    form.append(twh)
     twh.after(link)
 
     data[keys[2]].forEach((elem, i) => {
@@ -158,13 +166,13 @@ window.addEventListener("DOMContentLoaded", () => {
   function createLabel(elem, el) {
     label = document.createElement('label');
     label.innerHTML = `${elem[el]}`;
-    app.append(label)
+    form.append(label)
   }
 
 //СОЗДАЕМ ИНПУТ
   function createInput(elem, el) {
     input = document.createElement('input');
-    app.append(input);
+    form.append(input);
 
     if(typeof(elem[el]) === 'object') {
       let key = Object.keys(elem[el]);
@@ -177,13 +185,13 @@ window.addEventListener("DOMContentLoaded", () => {
          switch (elem[el][i]) {
          case "textarea": 
             textarea = document.createElement('textarea');
-            app.removeChild(input)
+            form.removeChild(input)
             value = Object.values(elem[el])
             textarea.setAttribute(`${key[1]}`, '')
-            app.append(textarea)
+            form.append(textarea)
           break
          case "color": 
-          app.removeChild(input)
+          form.removeChild(input)
           value = Object.values(elem[el])
           createColors(key, value) 
           break 
@@ -220,8 +228,8 @@ window.addEventListener("DOMContentLoaded", () => {
         break;
         case "mask":
         input.setAttribute('type', 'text')
-        // console.log(id)
-        // $(`#${id}`).mask(`${elem[el][i]}`);
+        input.setAttribute('id', id)
+        $(`#${id}`).mask(`${elem[el][i]}`);
         default:
         break;
        } 
@@ -234,7 +242,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function createButtons(elem, el) {
     let button = document.createElement('button');
     button.innerHTML = `${elem[el]}`;
-    app.append(button)
+    form.append(button)
   }
 
 //СОЗДАЕМ АТРИБУТ TYPEFILE 
@@ -250,8 +258,8 @@ window.addEventListener("DOMContentLoaded", () => {
     let tech = technologies;
     let formTech = document.createElement('form');
     formTech.className = 'formTech';
-    app.removeChild(input);
-    app.append(formTech);
+    form.removeChild(input);
+    form.append(formTech);
     tech.forEach(i => {
       let id = createId()
       let checkboxTech = document.createElement('div');
@@ -269,12 +277,10 @@ window.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-//СОЗДАЕМ МАСКУ
-
 //СОЗДАЕМ ЦВЕТА
 function createColors(key, value) {
   let select = document.createElement('select')
-  app.append(select)
+  form.append(select)
   let option = document.createElement('option')
   option.style.background = '#191919'
   option.setAttribute('hidden', '')
@@ -309,11 +315,6 @@ function createColors(key, value) {
       break;
      }
   }
-
-
-//МАСКИ (JQUERY)
-
-
 
 //СОЗДАЕМ ID ДЛЯ ИНПУТОВ И ЛЕЙБЛОВ
   function createId() {
